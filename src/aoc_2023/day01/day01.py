@@ -9,7 +9,12 @@ def parse_part1(raw_input: str) -> list[int]:
     the last digit (in that order) to form a single two-digit number.
     """
     no_letters = [[c for c in line if c.isdigit()] for line in raw_input.splitlines()]
-    return [int("".join([line[0], line[-1]])) for line in no_letters]
+    return [
+        int("".join([line[0], line[-1]]))
+        if len(line) > 1
+        else int("".join([line[0], line[0]]))
+        for line in no_letters
+    ]
 
 
 def part1(input: list[int]) -> int:
@@ -37,41 +42,36 @@ def convert_text_digits(line: str) -> str:
         "eight",
         "nine",
     ]
-    seen_digits: list[str] = []
+    seen: list[str] = []
 
-    # for lidx, c in enumerate(line):
-    #     if c.isdigit():
-    #         seen_digits.append(c)
-    #         continue
-
-    #     for d in tdigits:
-    #         if line[lidx:].startswith(d):
-    #             seen_digits.append(dmap[d])
-    #             break
     rem = line
     idx = 0
     while len(rem) > 0:
         idx += 1
         if idx == 100:
             raise AssertionError("Too many iterations")
-        print("start", rem, seen_digits)
+
         if rem[0].isdigit():
-            seen_digits.append(rem[0])
+            seen.append(rem[0])
             rem = rem[1:]
-            print("found digit", rem, seen_digits)
             continue
 
+        bflag = False
         for didx, d in enumerate(tdigits):
             if rem.startswith(d):
-                seen_digits.append(str(didx))
+                seen.append(str(didx))
                 rem = rem[len(d) :]
-                print("found text digit", rem, seen_digits)
+                bflag = True
                 continue
 
-        # If reach this point, is not a digit or text digit, skip it
+        if bflag:
+            continue
+
+        # If reach this point, is not a digit or text digit, add it
+        seen.append(rem[0])
         rem = rem[1:]
 
-    return "".join(seen_digits)
+    return "".join(seen)
 
 
 def parse_part2(raw_input: str) -> list[int]:
@@ -110,7 +110,8 @@ if __name__ == "__main__":
 
     # === Part 2 =======================================================================
     p2_start = perf_counter_ns()
-    p2 = part1(parse_part2(raw_input))
+    p2_parsed = parse_part2(raw_input)
+    p2 = part1(p2_parsed)
     p2_time = format_ns(perf_counter_ns() - p2_start)
     print(f"Part 2: {p2}")
 
