@@ -51,8 +51,7 @@ if __name__ == "__main__":
     parse_start = perf_counter_ns()
 
     input_path = Path(__file__).parent / "input.txt"
-    with open(input_path) as f:
-        raw_input = f.read()
+    raw_input = input_path.read_text()
 
     input = parse(raw_input)
     parse_time = format_ns(perf_counter_ns() - parse_start)
