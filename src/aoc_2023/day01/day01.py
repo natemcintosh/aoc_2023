@@ -21,14 +21,14 @@ def part1(input: list[int]) -> int:
     return sum(input)
 
 
-def convert_text_digits(line: str) -> str:
+def part2(line: str) -> int:
     """
     For a single line
 
-    Designed for cases like 'eightwo' -> '8wo' not 'eigh2'
+    Designed for cases like 'eightwothree'; should produce '83'
 
-    For each possible text digits, from longest to shortest, look for it at the
-    beginning.
+    Start at the beginning of the line, look for a digit, then look for a text digit,
+    then drop anything that isn't a digit
     """
     tdigits = [
         "zero",
@@ -60,34 +60,21 @@ def convert_text_digits(line: str) -> str:
         for didx, d in enumerate(tdigits):
             if rem.startswith(d):
                 seen.append(str(didx))
-                rem = rem[len(d) :]
+                rem = rem[1:]
                 bflag = True
-                continue
+                break
 
         if bflag:
             continue
 
-        # If reach this point, is not a digit or text digit, add it
-        seen.append(rem[0])
+        # If reach this point, is not a digit or text digit
         rem = rem[1:]
 
-    return "".join(seen)
-
-
-def parse_part2(raw_input: str) -> list[int]:
-    """
-    our calculation isn't quite right. It looks like some of the digits are actually
-    spelled out with letters: one, two, three, four, five, six, seven, eight, and nine
-    also count as valid "digits".
-
-    Equipped with this new information, you now need to find the real first and last
-    digit on each line.
-    """
-    # Replace every occurence of a text digit with an actual digit
-    # But have to do it in order. 'eightwo' has to be changed into '8wo' not 'eigh2'
-    fix_raw = "\n".join([convert_text_digits(line) for line in raw_input.splitlines()])
-
-    return parse_part1(fix_raw)
+    return (
+        int("".join([seen[0], seen[-1]]))
+        if len(seen) > 1
+        else int("".join([seen[0], seen[0]]))
+    )
 
 
 if __name__ == "__main__":
@@ -110,8 +97,7 @@ if __name__ == "__main__":
 
     # === Part 2 =======================================================================
     p2_start = perf_counter_ns()
-    p2_parsed = parse_part2(raw_input)
-    p2 = part1(p2_parsed)
+    p2 = sum(part2(line) for line in raw_input.splitlines())
     p2_time = format_ns(perf_counter_ns() - p2_start)
     print(f"Part 2: {p2}")
 
