@@ -49,11 +49,11 @@ def parse_game(game: str) -> list[RGB]:
     The first set is 3 blue cubes and 4 red cubes; the second set is 1 red cube, 2 green
     cubes, and 6 blue cubes; the third set is only 2 green cubes.
     """
-    # Get rid of the game number
+    # Split into draws
     draws = game.split(";")
 
     # To search for
-    pattern = re.compile(r"(\d+) (['b'|'r'|'g'])")
+    pattern = re.compile(r"(\d+) ([b|r|g])")
 
     # Break it into easy to digest chunks
     pairings = [pattern.findall(d) for d in draws]
@@ -110,7 +110,6 @@ if __name__ == "__main__":
     raw_input = input_path.read_text()
     games = [parse_game(game) for game in raw_input.splitlines()]
 
-    # input = parse_part1(raw_input)
     parse_time = format_ns(perf_counter_ns() - parse_start)
 
     # === Part 1 =======================================================================
