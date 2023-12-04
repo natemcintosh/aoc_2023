@@ -1,6 +1,7 @@
 import re
 from pathlib import Path
 from dataclasses import dataclass
+from math import prod
 from enum import Enum
 
 
@@ -12,11 +13,11 @@ class Type(Enum):
     Number = 2
 
 
-@dataclass
+@dataclass(frozen=True)
 class Item:
     value: str
     typ: Type
-    inds: list[tuple[int, int]]
+    inds: tuple[tuple[int, int], ...]
 
 
 def parse(raw_input: str) -> list[Item]:
@@ -38,51 +39,59 @@ def parse(raw_input: str) -> list[Item]:
     For each match, create an `Item` object
     """
     items: list[Item] = []
-    pat = re.compile(r"([#|$|%|&|*|+|-|/|=|@]|\d+)")
+    pat = re.compile(r"([#|$|%|&|*|+|\-|/|=|@]|\d+)")
 
     for row, line in enumerate(raw_input.splitlines()):
         for m in pat.finditer(line):
             t = Type.Number if m.group().isdigit() else Type.Part
-            inds = [(row, col) for col in range(m.start(), m.end())]
+            inds = tuple((row, col) for col in range(m.start(), m.end()))
             items.append(Item(value=m.group(), typ=t, inds=inds))
 
     return items
 
 
-def part1(items: list[Item]) -> int:
+def solve(items: list[Item], keep_parts: set[str]) -> tuple[int, int]:
     """
     Once we have a list of all the Items, iterate over just the Parts, and find their
     Number neighbors. Then add the values of the number neighbors
+
+    First returned item is for part 1, second item is for part 2
     """
     # Create a dictionary mapping from index to number
-    numbers: dict[tuple[int, int], int] = {
-        idx: int(i.value) for i in items for idx in i.inds if i.typ == Type.Number
-    }
+    numbers = {idx: i for i in items for idx in i.inds if i.typ == Type.Number}
 
     DIRS = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
+    seen: list[Item] = []
 
     total = 0
+    gear_ratio = 0
     for item in items:
-        # Only examine symbols
-        if item.typ == Type.Number:
+        # Only examine symbols we care about
+        if (item.typ == Type.Number) or (item.value not in keep_parts):
             continue
 
-        # A list of seen row number and number pairs
-        seen: list[tuple[int, int]] = []
-        # It is a symbol. Look in the row above, this row, and the row below for numbers
+        # Don't use anything from previous iteration
+        seen.clear()
+
+        # For each possible direction
         for d in DIRS:
+            # If the neighbor is a number we know of
             if (
                 neighbor := (d[0] + item.inds[0][0], d[1] + item.inds[0][1])
             ) in numbers:
                 # Check if we've already added this number for this symbol
                 n = numbers[neighbor]
-                if (neighbor[0], n) in seen:
+                if n in seen:
                     continue
                 else:
-                    seen.append((neighbor[0], n))
-                    total += n
+                    seen.append(n)
+                    total += int(n.value)
 
-    return total
+        # Calculate the gear ratio if there's more than one number
+        gr = prod(int(s.value) for s in seen) if len(seen) > 1 else 0
+        gear_ratio += gr
+
+    return total, gear_ratio
 
 
 if __name__ == "__main__":
@@ -97,19 +106,16 @@ if __name__ == "__main__":
 
     parse_time = format_ns(perf_counter_ns() - parse_start)
 
-    # === Part 1 =======================================================================
+    # === Both Parts ===================================================================
     p1_start = perf_counter_ns()
-    p1 = part1(input)
-    p1_time = format_ns(perf_counter_ns() - p1_start)
+    all_part_symbols: set[str] = set(
+        item.value for item in input if item.typ == Type.Part
+    )
+    p1, p2 = solve(input, keep_parts=all_part_symbols)
+    solve_time = format_ns(perf_counter_ns() - p1_start)
     print(f"Part 1: {p1}")
-
-    # === Part 2 =======================================================================
-    p2_start = perf_counter_ns()
-    # p2 = sum(smallest_RGB(game).power() for game in games)
-    p2_time = format_ns(perf_counter_ns() - p2_start)
-    # print(f"Part 2: {p2}")
+    print(f"Part 1: {p2}")
 
     # === Printing =====================================================================
     print(f"\n\nSetup took {parse_time}")
-    print(f"Part 1 took {p1_time}")
-    print(f"Part 2 took {p2_time}")
+    print(f"Solving both took {solve_time}")
