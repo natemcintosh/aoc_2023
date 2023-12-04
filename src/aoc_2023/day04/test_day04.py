@@ -1,4 +1,7 @@
-from aoc_2023.day04.day04 import parse_card, part2
+from pathlib import Path
+from aoc_2023.day04.day04 import parse_card, part2, Cards
+
+import pytest
 
 
 def test_part1():
@@ -14,6 +17,19 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"""
     assert want == got
 
 
+@pytest.fixture
+def cards() -> list[Cards]:
+    input_path = Path(__file__).parent / "input.txt"
+    raw_input = input_path.read_text()
+    return [parse_card(line) for line in raw_input.splitlines()]
+
+
+def test_part1_real(cards):
+    got = sum(c.points_won() for c in cards)
+    want = 21088
+    assert got == want
+
+
 def test_part2():
     raw_input = """Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
@@ -24,4 +40,10 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"""
     cards = [parse_card(line) for line in raw_input.splitlines()]
     got = part2(cards)
     want = 30
+    assert want == got
+
+
+def test_part2_real(cards):
+    got = part2(cards)
+    want = 6874754
     assert want == got

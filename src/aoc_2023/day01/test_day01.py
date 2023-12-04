@@ -1,3 +1,4 @@
+from pathlib import Path
 import pytest
 from aoc_2023.day01.day01 import parse_part1, part1, part2
 
@@ -27,6 +28,16 @@ treb7uchet"""
     assert want == got
 
 
+def test_part1_real():
+    input_path = Path(__file__).parent / "input.txt"
+    raw_input = input_path.read_text()
+    parsed = parse_part1(raw_input)
+    print(parsed)
+    got = part1(parsed)
+    want = 54940
+    assert want == got
+
+
 @pytest.fixture
 def p2_input() -> str:
     return """two1nine
@@ -47,4 +58,12 @@ def test_part2(p2_input):
 def test_part2_edge_case():
     got = part2("oneight")
     want = 18
+    assert want == got
+
+
+def test_part2_real():
+    input_path = Path(__file__).parent / "input.txt"
+    raw_input = input_path.read_text()
+    got = sum(part2(line) for line in raw_input.splitlines())
+    want = 54208
     assert want == got

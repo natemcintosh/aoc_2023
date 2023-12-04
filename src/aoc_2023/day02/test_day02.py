@@ -1,3 +1,4 @@
+from pathlib import Path
 from aoc_2023.day02.day02 import parse_game, RGB, part1, smallest_RGB
 
 import pytest
@@ -44,6 +45,15 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"""
     assert want == got
 
 
+def test_part1_real():
+    input_path = Path(__file__).parent / "input.txt"
+    raw_input = input_path.read_text()
+    games = [parse_game(game) for game in raw_input.splitlines()]
+    got = part1(games)
+    want = 2449
+    assert want == got
+
+
 def test_part2():
     raw_input = """Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
@@ -53,4 +63,13 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"""
     games = [parse_game(game) for game in raw_input.splitlines()]
     got = sum(smallest_RGB(game).power() for game in games)
     want = 2286
+    assert want == got
+
+
+def test_part2_real():
+    input_path = Path(__file__).parent / "input.txt"
+    raw_input = input_path.read_text()
+    games = [parse_game(game) for game in raw_input.splitlines()]
+    got = sum(smallest_RGB(game).power() for game in games)
+    want = 63981
     assert want == got
