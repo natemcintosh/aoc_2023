@@ -33,4 +33,4 @@ jobs:
         ruff --output-format=github .
     - name: Test with pytest
       run: |
-        pytest -v
+        pytest
