@@ -4,7 +4,7 @@ from math import prod, sqrt, ceil, floor
 from aoc_2023.utils import format_ns
 
 
-def parse(raw_input: str) -> tuple[list[int], list[int]]:
+def parse_p1(raw_input: str) -> tuple[list[int], list[int]]:
     """
     input looks like
 
@@ -21,20 +21,6 @@ def parse(raw_input: str) -> tuple[list[int], list[int]]:
     return times, dists
 
 
-def calc_distance(total_time: int, charge_time: int) -> int:
-    """
-    Calculate distance traveled
-    """
-    assert 0 <= charge_time <= total_time
-    return charge_time * (total_time - charge_time)
-
-
-def ways_to_win(race_time: int, record_distance: int) -> int:
-    return sum(
-        1 for t in range(race_time + 1) if calc_distance(race_time, t) > record_distance
-    )
-
-
 def parse_p2(raw_input: str) -> tuple[int, int]:
     time, dist = raw_input.strip().split("\n", maxsplit=1)
     _, stimes = time.split(":", maxsplit=1)
@@ -46,7 +32,7 @@ def parse_p2(raw_input: str) -> tuple[int, int]:
     return time, dist
 
 
-def part2(time: int, record_distance: int) -> int:
+def ways_to_win(time: int, record_distance: int) -> int:
     """
     We want values of charge_time that give us distances greater than record_distance
 
@@ -55,12 +41,16 @@ def part2(time: int, record_distance: int) -> int:
     where v is velocity (charge time)
     gives
     1/2 * (t - sqrt(t*t - 4d)) < v < 1/2 * (sqrt(t*t - 4d) + t)
+    Thank you Wolfram Alpha
 
     So we can just find the integers between those two values, and count how many of
     them there are.
     """
-    gt = ceil(1 / 2 * (time - sqrt(time * time - 4 * record_distance)))
-    lt = floor(1 / 2 * (sqrt(time * time - 4 * record_distance) + time))
+    # Need to have the very small numbers in the equation so that if we end up with a
+    # whole number, we do not include it. This is because of they are hard inequalities,
+    # not <=
+    gt = ceil(1 / 2 * (time - sqrt(time * time - 4 * record_distance)) + 1e-9)
+    lt = floor(1 / 2 * (sqrt(time * time - 4 * record_distance) + time) - 1e-9)
 
     return lt - gt + 1
 
@@ -73,7 +63,7 @@ if __name__ == "__main__":
 
     input_path = Path(__file__).parent / "input.txt"
     raw_input = input_path.read_text()
-    times, dists = parse(raw_input)
+    times, dists = parse_p1(raw_input)
 
     parse_time = format_ns(perf_counter_ns() - parse_start)
 
@@ -86,7 +76,7 @@ if __name__ == "__main__":
     # === Part 2 =======================================================================
     p2_start = perf_counter_ns()
     time, dist = parse_p2(raw_input)
-    p2 = part2(time, dist)
+    p2 = ways_to_win(time, dist)
     p2_time = format_ns(perf_counter_ns() - p2_start)
     print(f"Part 2: {p2}")
 
