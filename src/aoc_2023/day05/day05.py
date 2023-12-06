@@ -95,7 +95,7 @@ def parse_mapping(s: str) -> Mapping:
     source = m[0][0]
     dest = m[0][1]
     nums = [[int(s) for s in line.split()] for line in lines[1:]]
-    mappings = {range(l[1], l[1] + l[2]): range(l[0], l[0] + l[2]) for l in nums}
+    mappings = {range(n[1], n[1] + n[2]): range(n[0], n[0] + n[2]) for n in nums}
     return Mapping(source=source, dest=dest, mapping=mappings)
 
 
