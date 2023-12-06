@@ -7,3 +7,5 @@
 #   all-features: false
 
 -e file:.
+more-itertools==10.1.0
+tqdm==4.66.1

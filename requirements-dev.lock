@@ -16,6 +16,7 @@ iniconfig==2.0.0
 ipython==8.18.1
 jedi==0.19.1
 matplotlib-inline==0.1.6
+more-itertools==10.1.0
 mypy-extensions==1.0.0
 packaging==23.2
 parso==0.8.3
@@ -31,5 +32,6 @@ pytest==7.4.3
 ruff==0.1.6
 six==1.16.0
 stack-data==0.6.3
+tqdm==4.66.1
 traitlets==5.14.0
 wcwidth==0.2.12
