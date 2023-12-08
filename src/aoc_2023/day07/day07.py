@@ -1,7 +1,6 @@
 from pathlib import Path
 from enum import IntEnum
 from collections import Counter
-from typing import Callable
 
 import polars as pl
 
