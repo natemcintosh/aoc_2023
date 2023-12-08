@@ -1,6 +1,7 @@
 from pathlib import Path
 from enum import IntEnum
 from collections import Counter
+from collections.abc import Callable
 
 import polars as pl
 
@@ -68,57 +69,10 @@ def parse_line(line: str, w_joker: bool = False) -> tuple[list[Card], int]:
     return [parse_card(c, w_joker) for c in cards], int(bid)
 
 
-def five_of_kind(hand: list[Card]) -> bool:
-    "Is this hand five of a kind?"
-    return [5] == sorted(Counter(hand).values())
+def which_type(hand: list, count: bool = True) -> str:
+    m: list[int] = sorted(Counter(hand).values()) if count else hand
 
-
-def four_of_kind(hand: list[Card]) -> bool:
-    "Are there 4 of the same?"
-    return [1, 4] == sorted(Counter(hand).values())
-
-
-def full_house(hand: list[Card]) -> bool:
-    """
-    Full house, where three cards have the same label, and the remaining two cards share
-    a different label: 23332
-    """
-    return [2, 3] == sorted(Counter(hand).values())
-
-
-def three_of_kind(hand: list[Card]) -> bool:
-    """
-    Three of a kind, where three cards have the same label, and the remaining two cards
-    are each different from any other card in the hand: TTT98
-    """
-    return [1, 1, 3] == sorted(Counter(hand).values())
-
-
-def two_pair(hand: list[Card]) -> bool:
-    """
-    Two pair, where two cards share one label, two other cards share a second label, and
-    the remaining card has a third label: 23432
-    """
-    return [1, 2, 2] == sorted(Counter(hand).values())
-
-
-def one_pair(hand: list[Card]) -> bool:
-    """
-    One pair, where two cards share one label, and the other three cards have a
-    different label from the pair and each other: A23A4
-    """
-    return [1, 1, 1, 2] == sorted(Counter(hand).values())
-
-
-def high_card(hand: list[Card]) -> bool:
-    """
-    High card, where all cards' labels are distinct: 23456
-    """
-    return [1, 1, 1, 1, 1] == sorted(Counter(hand).values())
-
-
-def which_type(hand: list[Card]) -> str:
-    match sorted(Counter(hand).values()):
+    match m:
         case [1, 1, 3]:
             return "three_of_kind"
         case [1, 2, 2]:
@@ -134,7 +88,26 @@ def which_type(hand: list[Card]) -> str:
         case [5]:
             return "five_of_kind"
 
-    raise AssertionError(f"Did not recognize hand {hand}")
+    raise AssertionError(f"Did not recognize pairings {m}")
+
+
+def joker_which_type(hand) -> str:
+    """
+    Jokers will act like whatever card would make the hand the strongest possible.
+    """
+    h = list(hand)
+    n_jokers = list(h).count(1)
+
+    # Count everything that isn't a joker
+    counts = sorted(Counter([x for x in h if x != 1]).values())
+
+    if len(counts) > 0:
+        # Add the count of jokers to the card with the most counts
+        counts[-1] += n_jokers
+    else:
+        counts = [5]
+
+    return which_type(counts, count=False)
 
 
 def type_score() -> pl.Expr:
@@ -156,7 +129,7 @@ def type_score() -> pl.Expr:
     )
 
 
-def rank_hands(hands: pl.DataFrame) -> int:
+def rank_hands(hands: pl.DataFrame, rank_fn: Callable) -> int:
     """
     Sorts the cards, from least to best.
 
@@ -170,7 +143,7 @@ def rank_hands(hands: pl.DataFrame) -> int:
     the third card in each hand, then the fourth, then the fifth.
     """
     return (
-        hands.with_columns(type=pl.col.hand.map_elements(which_type))
+        hands.with_columns(type=pl.col.hand.map_elements(rank_fn))
         .with_columns(type_score=type_score())
         .with_columns(s=pl.col.hand.list.to_struct())
         .unnest("s")
@@ -189,10 +162,6 @@ def rank_hands(hands: pl.DataFrame) -> int:
     )
 
 
-def joker_which_type(hand: list[Card]) -> str:
-    pass
-
-
 if __name__ == "__main__":
     from time import perf_counter_ns
 
@@ -208,16 +177,17 @@ if __name__ == "__main__":
 
     # === Part 1 =======================================================================
     p1_start = perf_counter_ns()
-    p1 = rank_hands(hands)
+    p1 = rank_hands(hands, rank_fn=which_type)
     p1_time = format_ns(perf_counter_ns() - p1_start)
     print(f"Part 1: {p1}")
 
     # === Part 2 =======================================================================
     p2_start = perf_counter_ns()
-    # time, dist = parse_p2(raw_input)
-    # p2 = ways_to_win(time, dist)
+    parsed = [parse_line(line, w_joker=True) for line in raw_input.splitlines()]
+    hands = pl.DataFrame(dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed]))
+    p2 = rank_hands(hands, rank_fn=joker_which_type)
     p2_time = format_ns(perf_counter_ns() - p2_start)
-    # print(f"Part 2: {p2}")
+    print(f"Part 2: {p2}")
 
     # === Printing =====================================================================
     print(f"\n\nSetup took {parse_time}")

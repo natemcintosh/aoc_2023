@@ -3,6 +3,7 @@ from aoc_2023.day07.day07 import (
     Card,
     parse_line,
     rank_hands,
+    joker_which_type,
 )
 
 import pytest
@@ -39,6 +40,32 @@ KTJJT 220
 QQQJA 483"""
     parsed = [parse_line(line) for line in raw_input.splitlines()]
     hands = pl.DataFrame(dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed]))
-    got = rank_hands(hands)
+    got = rank_hands(hands, which_type)
     want = 6440
+    assert want == got
+
+
+joker_params = [
+    ([10, 5, 5, 1, 5], "four_of_kind"),
+    ([13, 10, 1, 1, 10], "four_of_kind"),
+    ([12, 12, 12, 1, 14], "four_of_kind"),
+]
+
+
+@pytest.mark.parametrize("hand, want", joker_params)
+def test_joker_which_type(hand, want):
+    got = joker_which_type(hand)
+    assert want == got
+
+
+def test_part2():
+    raw_input = """32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483"""
+    parsed = [parse_line(line, w_joker=True) for line in raw_input.splitlines()]
+    hands = pl.DataFrame(dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed]))
+    got = rank_hands(hands, rank_fn=joker_which_type)
+    want = 5905
     assert want == got
