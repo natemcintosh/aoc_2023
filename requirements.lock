@@ -8,4 +8,5 @@
 
 -e file:.
 more-itertools==10.1.0
+polars==0.19.19
 tqdm==4.66.1

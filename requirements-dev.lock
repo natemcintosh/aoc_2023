@@ -24,6 +24,7 @@ pathspec==0.11.2
 pexpect==4.9.0
 platformdirs==4.0.0
 pluggy==1.3.0
+polars==0.19.19
 prompt-toolkit==3.0.41
 ptyprocess==0.7.0
 pure-eval==0.2.2

@@ -63,12 +63,12 @@ if __name__ == "__main__":
 
     input_path = Path(__file__).parent / "input.txt"
     raw_input = input_path.read_text()
-    times, dists = parse_p1(raw_input)
 
     parse_time = format_ns(perf_counter_ns() - parse_start)
 
     # === Part 1 =======================================================================
     p1_start = perf_counter_ns()
+    times, dists = parse_p1(raw_input)
     p1 = prod(ways_to_win(t, d) for t, d in zip(times, dists))
     p1_time = format_ns(perf_counter_ns() - p1_start)
     print(f"Part 1: {p1}")
