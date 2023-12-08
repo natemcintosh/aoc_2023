@@ -21,9 +21,10 @@ class Card(IntEnum):
     FOUR = 4
     THREE = 3
     TWO = 2
+    JOKER = 1
 
 
-def parse_card(s: str) -> Card:
+def parse_card(s: str, w_joker: bool) -> Card:
     match s:
         case "2":
             return Card.TWO
@@ -44,7 +45,10 @@ def parse_card(s: str) -> Card:
         case "T":
             return Card.TEN
         case "J":
-            return Card.JACK
+            if w_joker:
+                return Card.JOKER
+            else:
+                return Card.JACK
         case "Q":
             return Card.QUEEN
         case "K":
@@ -55,13 +59,13 @@ def parse_card(s: str) -> Card:
     raise ValueError(f"Card {s} was not expected")
 
 
-def parse_line(line: str) -> tuple[list[Card], int]:
+def parse_line(line: str, w_joker: bool = False) -> tuple[list[Card], int]:
     """
     A hand looks likes
     32T3K 765
     """
     cards, bid = line.split(maxsplit=1)
-    return [parse_card(c) for c in cards], int(bid)
+    return [parse_card(c, w_joker) for c in cards], int(bid)
 
 
 def five_of_kind(hand: list[Card]) -> bool:
@@ -114,20 +118,23 @@ def high_card(hand: list[Card]) -> bool:
 
 
 def which_type(hand: list[Card]) -> str:
-    test_fns = [
-        five_of_kind,
-        four_of_kind,
-        full_house,
-        three_of_kind,
-        two_pair,
-        one_pair,
-        high_card,
-    ]
-    for tf in test_fns:
-        if tf(hand):
-            return tf.__name__
+    match sorted(Counter(hand).values()):
+        case [1, 1, 3]:
+            return "three_of_kind"
+        case [1, 2, 2]:
+            return "two_pair"
+        case [1, 1, 1, 2]:
+            return "one_pair"
+        case [1, 1, 1, 1, 1]:
+            return "high_card"
+        case [2, 3]:
+            return "full_house"
+        case [1, 4]:
+            return "four_of_kind"
+        case [5]:
+            return "five_of_kind"
 
-    raise AssertionError(f"Hand {hand} did not match anything")
+    raise AssertionError(f"Did not recognize hand {hand}")
 
 
 def type_score() -> pl.Expr:
@@ -163,7 +170,7 @@ def rank_hands(hands: pl.DataFrame) -> int:
     the third card in each hand, then the fourth, then the fifth.
     """
     return (
-        hands.with_columns(type=pl.Series([which_type(h) for h in hands["hand"]]))
+        hands.with_columns(type=pl.col.hand.map_elements(which_type))
         .with_columns(type_score=type_score())
         .with_columns(s=pl.col.hand.list.to_struct())
         .unnest("s")
@@ -180,6 +187,10 @@ def rank_hands(hands: pl.DataFrame) -> int:
         .select(winning=(pl.col.rank * pl.col.bid).sum())
         .item()
     )
+
+
+def joker_which_type(hand: list[Card]) -> str:
+    pass
 
 
 if __name__ == "__main__":

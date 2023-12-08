@@ -1,12 +1,6 @@
 from aoc_2023.day07.day07 import (
-    five_of_kind,
-    four_of_kind,
+    which_type,
     Card,
-    full_house,
-    three_of_kind,
-    two_pair,
-    one_pair,
-    high_card,
     parse_line,
     rank_hands,
 )
@@ -16,31 +10,24 @@ import polars as pl
 
 
 hand_params = [
-    (five_of_kind, [Card.ACE] * 5, True),
-    (five_of_kind, [Card.FIVE] * 5, True),
-    (five_of_kind, [Card.TEN] * 4 + [Card.ACE], False),
-    (four_of_kind, [Card.TEN] * 4 + [Card.ACE], True),
-    (four_of_kind, [Card.TWO] + [Card.SEVEN] * 4, True),
-    (four_of_kind, [Card.TWO] * 2 + [Card.SEVEN] * 3, False),
-    (full_house, [Card.THREE] * 3 + [Card.EIGHT] * 2, True),
-    (full_house, [Card.THREE] * 2 + [Card.EIGHT] * 3, True),
-    (full_house, [Card.THREE, Card.NINE] + [Card.EIGHT] * 3, False),
-    (three_of_kind, [Card.TWO] * 3 + [Card.ACE, Card.JACK], True),
-    (three_of_kind, [Card.THREE] * 2 + [Card.EIGHT] * 3, False),
-    (two_pair, [Card.TWO, Card.TWO, Card.THREE, Card.THREE, Card.FOUR], True),
-    (two_pair, [Card.TWO, Card.TWO, Card.THREE, Card.FOUR, Card.FOUR], True),
-    (two_pair, [Card.TWO, Card.TWO, Card.THREE, Card.FIVE, Card.FOUR], False),
-    (one_pair, [Card.TWO, Card.TWO, Card.ACE, Card.KING, Card.QUEEN], True),
-    (one_pair, [Card.TWO, Card.QUEEN, Card.ACE, Card.KING, Card.QUEEN], True),
-    (one_pair, [Card.TWO, Card.TEN, Card.ACE, Card.KING, Card.QUEEN], False),
-    (high_card, list(Card)[:5], True),
-    (high_card, [Card.TWO, Card.TWO, Card.ACE, Card.KING, Card.QUEEN], False),
+    ([Card.ACE] * 5, "five_of_kind"),
+    ([Card.FIVE] * 5, "five_of_kind"),
+    ([Card.TEN] * 4 + [Card.ACE], "four_of_kind"),
+    ([Card.TWO] + [Card.SEVEN] * 4, "four_of_kind"),
+    ([Card.THREE] * 3 + [Card.EIGHT] * 2, "full_house"),
+    ([Card.THREE] * 2 + [Card.EIGHT] * 3, "full_house"),
+    ([Card.TWO] * 3 + [Card.ACE, Card.JACK], "three_of_kind"),
+    ([Card.TWO, Card.TWO, Card.THREE, Card.THREE, Card.FOUR], "two_pair"),
+    ([Card.TWO, Card.TWO, Card.THREE, Card.FOUR, Card.FOUR], "two_pair"),
+    ([Card.TWO, Card.TWO, Card.ACE, Card.KING, Card.QUEEN], "one_pair"),
+    ([Card.TWO, Card.QUEEN, Card.ACE, Card.KING, Card.QUEEN], "one_pair"),
+    (list(Card)[:5], "high_card"),
 ]
 
 
-@pytest.mark.parametrize("fn, hand, want", hand_params)
-def test_of_kind(fn, hand, want):
-    got = fn(hand)
+@pytest.mark.parametrize("hand, want", hand_params)
+def test_of_kind(hand, want):
+    got = which_type(hand)
     assert want == got
 
 
