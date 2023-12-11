@@ -40,11 +40,19 @@ def solve(arr: np.ndarray, spread_factor: int = 2) -> int:
 
     pts += to_add
 
-    # This is a tuple. Each tuple represents one of the pair of two
+    # This is a tuple. Each tuple represents one of the pair of two points we want to
+    # compare
     paired_inds = np.triu_indices(pts.shape[1], 1)
+
+    # pairs is a 2x2xN array. Each 2x2 matrix represents two points to calculate the
+    # distance between. Each point is a column, not a row.
     pairs = np.stack((pts[:, paired_inds[0]], pts[:, paired_inds[1]]), axis=1)
+
+    # Calc the distances in each direction
     dists = pairs[:, 1, :] - pairs[:, 0, :]
-    return np.linalg.norm(dists, ord=1, axis=1).sum(dtype=int)
+
+    # Sum up the distances in each direction for each pair, and then for all
+    return np.abs(dists).sum(axis=0).sum()
 
 
 if __name__ == "__main__":
