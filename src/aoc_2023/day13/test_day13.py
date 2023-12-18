@@ -1,8 +1,8 @@
 import pytest
+import numpy as np
 
 from aoc_2023.day13.day13 import (
     parse_arr,
-    find_vert_reflection,
     find_horz_reflection,
     part1,
 )
@@ -38,7 +38,7 @@ varrays = [
 
 @pytest.mark.parametrize("arr, want", varrays)
 def test_find_vert_reflection(arr, want):
-    got = find_vert_reflection(arr)
+    got = find_horz_reflection(np.rot90(arr, k=-1))
     assert want == got
 
 
@@ -66,6 +66,26 @@ harrays = [
 #....#..#"""
         ),
         4,
+    ),
+    (
+        np.array(
+            [
+                [1, 1, 0, 1, 1, 1, 0],
+                [0, 0, 1, 0, 1, 0, 1],
+                [1, 1, 0, 1, 1, 1, 0],
+                [1, 1, 1, 1, 0, 0, 1],
+                [0, 1, 0, 0, 0, 0, 1],
+                [0, 1, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 0, 0, 1],
+                [1, 1, 0, 1, 1, 1, 0],
+                [0, 0, 1, 0, 1, 0, 1],
+                [1, 1, 0, 1, 0, 1, 0],
+                [1, 0, 1, 0, 1, 0, 0],
+                [1, 0, 1, 1, 1, 0, 0],
+                [1, 0, 1, 1, 1, 0, 0],
+            ]
+        ),
+        12,
     ),
 ]
 

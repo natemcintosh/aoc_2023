@@ -12,25 +12,6 @@ def parse_arr(sarr: str) -> np.ndarray:
     )
 
 
-def find_vert_reflection(arr: np.ndarray) -> int:
-    """
-    If there is a vertical reflection, return the number of columns to the left of the
-    reflection line.
-
-    If no vertical reflection, return 0
-    """
-    # For each column
-    for cidx in range(arr.shape[1] - 2):
-        # What's the min number of columns on either side?
-        ncols = min(cidx + 1, arr.shape[1] - cidx - 1)
-        left = np.fliplr(arr[:, cidx - ncols + 1 : cidx + 1])
-        right = arr[:, cidx + 1 : cidx + 1 + ncols]
-        if np.equal(left, right).all():
-            return ncols + 1
-
-    return 0
-
-
 def find_horz_reflection(arr: np.ndarray) -> int:
     """
     If there is a horizontal reflection, return the number of rows to the left of the
@@ -38,14 +19,16 @@ def find_horz_reflection(arr: np.ndarray) -> int:
 
     If no horizontal reflection, return 0
     """
-    # For each column
-    for ridx in range(arr.shape[0] - 2):
-        # What's the min number of rows on either side?
-        nrows = min(ridx + 1, arr.shape[0] - ridx - 1)
-        top = np.flipud(arr[ridx - nrows + 1 : ridx + 1, :])
-        btm = arr[ridx + 1 : ridx + 1 + nrows, :]
-        if np.equal(top, btm).all():
-            return nrows + 1
+    # For each row. Don't need to do the last row because we'll have already compared
+    # the second last to the last
+    for ridx in range(arr.shape[0] - 1):
+        top = np.flipud(arr[: ridx + 1, :])
+        btm = arr[ridx + 1 :, :]
+
+        nrows = min(top.shape[0], btm.shape[0])
+
+        if np.equal(top[:nrows, :], btm[:nrows, :]).all():
+            return top.shape[0]
 
     return 0
 
@@ -53,8 +36,15 @@ def find_horz_reflection(arr: np.ndarray) -> int:
 def part1(arrays: list[np.ndarray]) -> int:
     total = 0
     for arr in arrays:
-        total += find_vert_reflection(arr)
-        total += 100 * find_horz_reflection(arr)
+        # If there is a horizontal component, add it
+        horz = find_horz_reflection(arr)
+        if horz > 0:
+            total += horz * 100
+        else:
+            # Otherwise, rotate so the columns on the left become rows on top
+            vert = find_horz_reflection(np.rot90(arr, k=-1))
+            assert vert > 0, f"Found one with no reflection: {arr.tolist()}"
+            total += vert
 
     return total
 
@@ -62,12 +52,31 @@ def part1(arrays: list[np.ndarray]) -> int:
 if __name__ == "__main__":
     from time import perf_counter_ns
 
+    arr = np.array(
+        [
+            [1, 1, 0, 1, 1, 1, 0],
+            [0, 0, 1, 0, 1, 0, 1],
+            [1, 1, 0, 1, 1, 1, 0],
+            [1, 1, 1, 1, 0, 0, 1],
+            [0, 1, 0, 0, 0, 0, 1],
+            [0, 1, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 0, 0, 1],
+            [1, 1, 0, 1, 1, 1, 0],
+            [0, 0, 1, 0, 1, 0, 1],
+            [1, 1, 0, 1, 0, 1, 0],
+            [1, 0, 1, 0, 1, 0, 0],
+            [1, 0, 1, 1, 1, 0, 0],
+            [1, 0, 1, 1, 1, 0, 0],
+        ]
+    )
+    find_horz_reflection(arr)
+
     # === Parse ========================================================================
     parse_start = perf_counter_ns()
 
     input_path = Path(__file__).parent / "input.txt"
     raw_input = input_path.read_text()
-    arrays = [parse_arr(sarr) for sarr in raw_input.split("\n\n")]
+    arrays = [parse_arr(sarr) for sarr in raw_input.strip().split("\n\n")]
     parse_time = format_ns(perf_counter_ns() - parse_start)
 
     # === Part 1 =======================================================================
