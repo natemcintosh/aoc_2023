@@ -79,10 +79,10 @@ def part1(lake_boundary: pl.DataFrame) -> int:
     scol = int(lake_boundary["col"].mean())  # type: ignore
 
     # What are the extremeties
-    rmax = lake_boundary["row"].max()
-    rmin = lake_boundary["row"].min()
-    cmax = lake_boundary["col"].max()
-    cmin = lake_boundary["col"].min()
+    # rmax = lake_boundary["row"].max()
+    # rmin = lake_boundary["row"].min()
+    # cmax = lake_boundary["col"].max()
+    # cmin = lake_boundary["col"].min()
 
     dirs = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
 
