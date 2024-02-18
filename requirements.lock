@@ -9,18 +9,37 @@
 
 -e file:.
 contourpy==1.2.0
+    # via matplotlib
 cycler==0.12.1
+    # via matplotlib
 fonttools==4.47.0
+    # via matplotlib
 kiwisolver==1.4.5
+    # via matplotlib
 matplotlib==3.8.2
+    # via aoc-2023
 more-itertools==10.1.0
+    # via aoc-2023
 networkx==3.2.1
+    # via aoc-2023
 numpy==1.26.2
+    # via aoc-2023
+    # via contourpy
+    # via matplotlib
+    # via scipy
 packaging==23.2
+    # via matplotlib
 pillow==10.1.0
+    # via matplotlib
 polars==0.19.19
+    # via aoc-2023
 pyparsing==3.1.1
+    # via matplotlib
 python-dateutil==2.8.2
+    # via matplotlib
 scipy==1.11.4
+    # via aoc-2023
 six==1.16.0
+    # via python-dateutil
 tqdm==4.66.1
+    # via aoc-2023
