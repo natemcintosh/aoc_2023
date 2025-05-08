@@ -1,6 +1,6 @@
-from aoc_2023.day12.day12 import Blueprint
-
 import pytest
+
+from aoc_2023.day12.day12 import Blueprint
 
 lines = [
     ("#.#.### 1,1,3", Blueprint("#.#.###", [1, 1, 3])),

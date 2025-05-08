@@ -1,6 +1,6 @@
+from collections import defaultdict
 from pathlib import Path
 from typing import NamedTuple
-from collections import defaultdict
 
 from aoc_2023.utils import format_ns
 

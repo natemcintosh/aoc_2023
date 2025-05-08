@@ -1,9 +1,8 @@
 import re
-from pathlib import Path
 from dataclasses import dataclass
-from math import prod
 from enum import Enum
-
+from math import prod
+from pathlib import Path
 
 from aoc_2023.utils import format_ns
 

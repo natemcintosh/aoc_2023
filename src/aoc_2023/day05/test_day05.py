@@ -1,13 +1,14 @@
 from pathlib import Path
-from aoc_2023.day05.day05 import (
-    Mapping,
-    parse_mapping,
-    parse,
-    get_seed_location,
-    p2_seed_parser,
-)
 
 import pytest
+
+from aoc_2023.day05.day05 import (
+    Mapping,
+    get_seed_location,
+    p2_seed_parser,
+    parse,
+    parse_mapping,
+)
 
 
 class Test_parse_mapping:

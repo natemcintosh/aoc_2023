@@ -1,12 +1,11 @@
-import pytest
 import numpy as np
+import pytest
 
 from aoc_2023.day13.day13 import (
-    parse_arr,
     find_horz_reflection,
+    parse_arr,
     part1,
 )
-
 
 varrays = [
     (

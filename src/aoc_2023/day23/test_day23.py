@@ -1,9 +1,9 @@
 from aoc_2023.day23.day23 import (
-    get_nodes,
+    P,
     build_p1_graph,
     build_p2_graph,
+    get_nodes,
     longest_path,
-    P,
 )
 
 

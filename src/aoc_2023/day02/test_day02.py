@@ -1,7 +1,8 @@
 from pathlib import Path
-from aoc_2023.day02.day02 import parse_game, RGB, part1, smallest_RGB
 
 import pytest
+
+from aoc_2023.day02.day02 import RGB, parse_game, part1, smallest_RGB
 
 params = [
     (

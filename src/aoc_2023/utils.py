@@ -15,8 +15,8 @@ def format_ns(nanosecs: int) -> str:
         case 0 | 1 | 2:
             return f"{nanosecs}ns"
         case 3 | 4 | 5:
-            return f"{int(nanosecs/1e3)}us"
+            return f"{int(nanosecs / 1e3)}μs"
         case 6 | 7 | 8:
-            return f"{int(nanosecs/1e6)}ms"
+            return f"{int(nanosecs / 1e6)}ms"
         case _:
-            return f"{int(nanosecs/1e9)}s"
+            return f"{int(nanosecs / 1e9)}s"

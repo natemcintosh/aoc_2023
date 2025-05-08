@@ -1,6 +1,6 @@
-from aoc_2023.day21.day21 import parse_arr, part1, to_1d
-
 import pytest
+
+from aoc_2023.day21.day21 import parse_arr, part1, to_1d
 
 tarr = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
 params = [(3, ridx, cidx, tarr[ridx][cidx]) for ridx in range(3) for cidx in range(3)]

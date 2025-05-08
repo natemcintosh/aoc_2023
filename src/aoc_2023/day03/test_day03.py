@@ -1,5 +1,6 @@
 from pathlib import Path
-from aoc_2023.day03.day03 import parse, solve, Type
+
+from aoc_2023.day03.day03 import Type, parse, solve
 
 
 def test_part1():

@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import NamedTuple
 
-
 import networkx as nx
 
 from aoc_2023.utils import format_ns

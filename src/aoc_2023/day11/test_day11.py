@@ -1,6 +1,6 @@
-from aoc_2023.day11.day11 import parse, solve
-
 import pytest
+
+from aoc_2023.day11.day11 import parse, solve
 
 
 def test_part1():

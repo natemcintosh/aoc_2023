@@ -1,7 +1,7 @@
 import itertools
 import math
-from pathlib import Path
 import re
+from pathlib import Path
 
 from aoc_2023.utils import format_ns
 

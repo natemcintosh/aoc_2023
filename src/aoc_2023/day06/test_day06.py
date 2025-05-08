@@ -4,7 +4,6 @@ import pytest
 
 from aoc_2023.day06.day06 import parse_p1, parse_p2, ways_to_win
 
-
 races = [(7, 9, 4), (15, 40, 8), (30, 200, 9)]
 
 

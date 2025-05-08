@@ -2,7 +2,6 @@ from pathlib import Path
 
 from aoc_2023.utils import format_ns
 
-
 if __name__ == "__main__":
     from time import perf_counter_ns
 

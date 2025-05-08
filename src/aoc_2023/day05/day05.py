@@ -1,7 +1,7 @@
 import re
-from pathlib import Path
-from dataclasses import dataclass
 from collections.abc import Callable
+from dataclasses import dataclass
+from pathlib import Path
 
 from more_itertools import chunked
 from tqdm import tqdm

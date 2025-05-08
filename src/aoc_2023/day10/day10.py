@@ -1,6 +1,7 @@
 from __future__ import annotations  # Need this so class can reference itself
-from pathlib import Path
+
 from dataclasses import dataclass
+from pathlib import Path
 
 from aoc_2023.utils import format_ns
 

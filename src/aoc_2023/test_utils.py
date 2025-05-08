@@ -1,6 +1,6 @@
-from aoc_2023.utils import format_ns
-
 import pytest
+
+from aoc_2023.utils import format_ns
 
 format_ns_cases = list(
     zip(
@@ -16,7 +16,7 @@ format_ns_cases = list(
             100_000_000,
             1_000_000_000,
         ],
-        ["1ns", "10ns", "100ns", "1us", "10us", "100us", "1ms", "10ms", "100ms", "1s"],
+        ["1ns", "10ns", "100ns", "1μs", "10μs", "100μs", "1ms", "10ms", "100ms", "1s"],
     )
 )
 

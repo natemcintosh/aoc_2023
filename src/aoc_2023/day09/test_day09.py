@@ -1,6 +1,7 @@
 from pathlib import Path
-import pytest
+
 import numpy as np
+import pytest
 
 from aoc_2023.day09.day09 import parse, predict
 

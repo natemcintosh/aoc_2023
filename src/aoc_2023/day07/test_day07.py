@@ -1,14 +1,13 @@
+import polars as pl
+import pytest
+
 from aoc_2023.day07.day07 import (
-    which_type,
     Card,
+    joker_which_type,
     parse_line,
     rank_hands,
-    joker_which_type,
+    which_type,
 )
-
-import pytest
-import polars as pl
-
 
 hand_params = [
     ([Card.ACE] * 5, "five_of_kind"),

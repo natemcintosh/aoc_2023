@@ -2,33 +2,25 @@
 name = "aoc-2023"
 version = "0.1.0"
 description = "Add your description here"
-authors = [
-    { name = "Nate McIntosh", email = "natemcintosh@gmail.com" }
-]
-dependencies = [
-    "more-itertools>=10.1.0",
-    "tqdm>=4.66.1",
-    "polars>=0.19.19",
-    "numpy>=1.24.4",
-    "scipy>=1.10.1",
-    "networkx>=3.1",
-    "matplotlib>=3.7.4",
-]
 readme = "README.md"
-requires-python = ">= 3.8"
+authors = [{ name = "Nate McIntosh", email = "natemcintosh@gmail.com" }]
+requires-python = ">=3.12.1"
+dependencies = [
+    "matplotlib>=3.10.1",
+    "more-itertools>=10.7.0",
+    "networkx>=3.4.2",
+    "numpy>=2.2.5",
+    "polars>=1.29.0",
+    "scipy>=1.15.2",
+    "tqdm>=4.67.1",
+]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build"]
+build-backend = "uv_build"
 
-[tool.rye]
-managed = true
-dev-dependencies = [
-    "pytest>=7.4.3",
-    "ipython>=8.12.3",
-    "ruff>=0.1.6",
-    "black>=23.11.0",
-]
+[dependency-groups]
+dev = ["ipython>=9.2.0", "pytest>=8.3.5", "ruff>=0.11.8"]
 
-[tool.hatch.metadata]
-allow-direct-references = true
+[tool.ruff]
+line-length = 88

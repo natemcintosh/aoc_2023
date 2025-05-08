@@ -1,7 +1,8 @@
 from pathlib import Path
-from aoc_2023.day04.day04 import parse_card, part2, Cards
 
 import pytest
+
+from aoc_2023.day04.day04 import Cards, parse_card, part2
 
 
 def test_part1():

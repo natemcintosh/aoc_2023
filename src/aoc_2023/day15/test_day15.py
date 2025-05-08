@@ -1,6 +1,6 @@
-from aoc_2023.day15.day15 import HASH, part2
-
 import pytest
+
+from aoc_2023.day15.day15 import HASH, part2
 
 hash_params = [
     ("HASH", 52),

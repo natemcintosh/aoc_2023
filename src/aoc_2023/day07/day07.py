@@ -1,7 +1,7 @@
-from pathlib import Path
-from enum import IntEnum
 from collections import Counter
 from collections.abc import Callable
+from enum import IntEnum
+from pathlib import Path
 
 import polars as pl
 

@@ -1,8 +1,7 @@
-from aoc_2023.day24.day24 import Ray, part1
-
-import pytest
 import numpy as np
+import pytest
 
+from aoc_2023.day24.day24 import Ray, part1
 
 ps = [
     (Ray(19, 13, 20, -2, 1, -2), Ray(18, 19, 22, -1, -1, -2), [14.33333, 15.333333]),

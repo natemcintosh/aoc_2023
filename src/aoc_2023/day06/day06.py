@@ -1,5 +1,5 @@
+from math import ceil, floor, prod, sqrt
 from pathlib import Path
-from math import prod, sqrt, ceil, floor
 
 from aoc_2023.utils import format_ns
 

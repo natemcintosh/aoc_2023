@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from aoc_2023.utils import format_ns
-
 import numpy as np
 import scipy.sparse
+
+from aoc_2023.utils import format_ns
 
 
 def parse_arr(raw_input: str) -> tuple[tuple[int, int], np.ndarray]:

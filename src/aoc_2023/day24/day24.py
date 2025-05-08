@@ -1,6 +1,6 @@
+from itertools import combinations
 from pathlib import Path
 from typing import NamedTuple
-from itertools import combinations
 
 from aoc_2023.utils import format_ns
 

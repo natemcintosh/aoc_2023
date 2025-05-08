@@ -1,6 +1,6 @@
 import pytest
 
-from aoc_2023.day10.day10 import Node, build_loop, parse, find_first_connecting_pt
+from aoc_2023.day10.day10 import Node, build_loop, find_first_connecting_pt, parse
 
 
 @pytest.mark.skip()

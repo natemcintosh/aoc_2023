@@ -1,5 +1,7 @@
 from pathlib import Path
+
 import pytest
+
 from aoc_2023.day01.day01 import parse_part1, part1, part2
 
 p1_params = [

@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from aoc_2023.utils import format_ns
-
 import numpy as np
+
+from aoc_2023.utils import format_ns
 
 
 def parse(raw_input: str) -> np.ndarray:
