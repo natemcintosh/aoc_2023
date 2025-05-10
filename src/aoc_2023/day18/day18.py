@@ -8,14 +8,14 @@ from aoc_2023.utils import format_ns
 
 class Instruction(NamedTuple):
     direction: str
-    count: int
+    cnt: int
     hexcode: str
 
     @staticmethod
     def parse(line: str) -> "Instruction":
         direction, count, hexcode = line.split(maxsplit=2)
         return Instruction(
-            direction=direction, count=int(count), hexcode=hexcode.strip("()")
+            direction=direction, cnt=int(count), hexcode=hexcode.strip("()")
         )
 
 
@@ -33,35 +33,29 @@ def dig_trench(instructions: list[Instruction]) -> pl.DataFrame:
     for inst in instructions:
         match inst.direction:
             case "R":
-                pts_visited.extend(
-                    [(row, coli, inst.hexcode) for coli in range(col, col + inst.count)]
-                )
-                col += inst.count
+                pts_visited.extend([
+                    (row, coli, inst.hexcode) for coli in range(col, col + inst.cnt)
+                ])
+                col += inst.cnt
             case "L":
-                pts_visited.extend(
-                    [
-                        (row, coli, inst.hexcode)
-                        for coli in range(col, col - inst.count, -1)
-                    ]
-                )
-                col -= inst.count
+                pts_visited.extend([
+                    (row, coli, inst.hexcode) for coli in range(col, col - inst.cnt, -1)
+                ])
+                col -= inst.cnt
             case "U":
-                pts_visited.extend(
-                    [
-                        (rowi, col, inst.hexcode)
-                        for rowi in range(row, row - inst.count, -1)
-                    ]
-                )
-                row -= inst.count
+                pts_visited.extend([
+                    (rowi, col, inst.hexcode) for rowi in range(row, row - inst.cnt, -1)
+                ])
+                row -= inst.cnt
             case "D":
-                pts_visited.extend(
-                    [(rowi, col, inst.hexcode) for rowi in range(row, row + inst.count)]
-                )
-                row += inst.count
+                pts_visited.extend([
+                    (rowi, col, inst.hexcode) for rowi in range(row, row + inst.cnt)
+                ])
+                row += inst.cnt
 
-    return pl.DataFrame(data=pts_visited, schema=["row", "col", "hexcode"]).sort(
-        "row", "col"
-    )
+    return pl.DataFrame(
+        data=pts_visited, schema=["row", "col", "hexcode"], orient="row"
+    ).sort("row", "col")
 
 
 def part1(lake_boundary: pl.DataFrame) -> int:
