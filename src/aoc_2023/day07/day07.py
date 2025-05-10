@@ -143,9 +143,11 @@ def rank_hands(hands: pl.DataFrame, rank_fn: Callable) -> int:
     the third card in each hand, then the fourth, then the fifth.
     """
     return (
-        hands.with_columns(type=pl.col.hand.map_elements(rank_fn))
+        hands.with_columns(
+            type=pl.col.hand.map_elements(function=rank_fn, return_dtype=pl.String)
+        )
         .with_columns(type_score=type_score())
-        .with_columns(s=pl.col.hand.list.to_struct())
+        .with_columns(s=pl.col.hand.arr.to_struct())
         .unnest("s")
         .sort(
             "type_score",
@@ -155,7 +157,7 @@ def rank_hands(hands: pl.DataFrame, rank_fn: Callable) -> int:
             "field_3",
             "field_4",
         )
-        .with_row_count(name="rank")
+        .with_row_index(name="rank")
         .with_columns(pl.col.rank + 1)
         .select(winning=(pl.col.rank * pl.col.bid).sum())
         .item()
@@ -171,7 +173,9 @@ if __name__ == "__main__":
     input_path = Path(__file__).parent / "input.txt"
     raw_input = input_path.read_text()
     parsed = [parse_line(line) for line in raw_input.splitlines()]
-    hands = pl.DataFrame(dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed]))
+    hands = pl.DataFrame(
+        dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed])
+    ).with_columns(hand=pl.col.hand.list.to_array(5))
 
     parse_time = format_ns(perf_counter_ns() - parse_start)
 
@@ -184,7 +188,9 @@ if __name__ == "__main__":
     # === Part 2 =======================================================================
     p2_start = perf_counter_ns()
     parsed = [parse_line(line, w_joker=True) for line in raw_input.splitlines()]
-    hands = pl.DataFrame(dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed]))
+    hands = pl.DataFrame(
+        dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed])
+    ).with_columns(hand=pl.col.hand.list.to_array(5))
     p2 = rank_hands(hands, rank_fn=joker_which_type)
     p2_time = format_ns(perf_counter_ns() - p2_start)
     print(f"Part 2: {p2}")

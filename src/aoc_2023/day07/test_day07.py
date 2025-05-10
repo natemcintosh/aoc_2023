@@ -38,7 +38,9 @@ KK677 28
 KTJJT 220
 QQQJA 483"""
     parsed = [parse_line(line) for line in raw_input.splitlines()]
-    hands = pl.DataFrame(dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed]))
+    hands = pl.DataFrame(
+        dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed])
+    ).with_columns(hand=pl.col.hand.list.to_array(5))
     got = rank_hands(hands, which_type)
     want = 6440
     assert want == got
@@ -64,7 +66,9 @@ KK677 28
 KTJJT 220
 QQQJA 483"""
     parsed = [parse_line(line, w_joker=True) for line in raw_input.splitlines()]
-    hands = pl.DataFrame(dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed]))
+    hands = pl.DataFrame(
+        dict(hand=[h[0] for h in parsed], bid=[h[1] for h in parsed])
+    ).with_columns(hand=pl.col.hand.list.to_array(5))
     got = rank_hands(hands, rank_fn=joker_which_type)
     want = 5905
     assert want == got
